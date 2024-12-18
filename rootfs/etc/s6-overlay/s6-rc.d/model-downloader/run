@@ -1,0 +1,52 @@
+#!/command/with-contenv bashio
+
+set -e
+
+ADDON_DIR="/share/f5_tts_server"
+
+OLD_OPTIONS="$ADDON_DIR/options.old.json"
+OPTIONS="/data/options.json"
+
+validate_url() {
+    local url="$1"
+    if [[ ! "$url" =~ ^https?:// ]]; then
+        echo "ERROR: '$url' is not a valid HTTP or HTTPS URL."
+        exit 1
+    fi
+}
+
+download_files(){
+
+    checkpoint=$(bashio::config 'checkpoint')
+    vocab=$(bashio::config 'vocab')
+    ref_audio=$(bashio::config 'ref_audio')
+
+    validate_url "$checkpoint"
+    validate_url "$vocab"
+    validate_url "$ref_audio"
+
+    curl -fSL -o "$ADDON_DIR/model.pt" "$checkpoint"
+    curl -fSL -o "$ADDON_DIR/vocab.txt" "$vocab"
+    curl -fSL -o "$ADDON_DIR/ref_audio.wav" "$ref_audio"
+
+    bashio::log.info "Model files downloaded successfully."
+
+    cp "$OPTIONS" "$OLD_OPTIONS"
+}
+
+# Check if first boot
+if [ ! -f "$OLD_OPTIONS" ]; then
+    bashio::log.info "Configuring first run..."
+    mkdir -p "$ADDON_DIR"
+    download_files
+    cp "$OPTIONS" "$OLD_OPTIONS"
+fi
+
+# Check for config diff
+if ! diff -q "$OPTIONS" "$OLD_OPTIONS" > /dev/null; then
+    bashio::log.info "Configuration has changed. Running update logic..."
+    download_model
+    cp "$OPTIONS" "$OLD_OPTIONS"
+else
+    bashio::log.info "Configuration has not changed. No action needed."
+fi

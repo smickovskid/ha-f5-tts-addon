@@ -1,0 +1,22 @@
+configuration:
+  checkpoint:
+    name: "Checkpoint URL"
+    description: >-
+      This option allows you to specify the URL for the TTS model checkpoint file.
+      This file contains the pre-trained model used for generating speech.
+  vocab:
+    name: "Vocabulary URL"
+    description: >-
+      This option allows you to specify the URL for the vocabulary file used with the TTS model.
+      The vocabulary file defines the list of tokens the TTS engine can use.
+  ref_audio:
+    name: "Reference Audio URL"
+    description: >-
+      This option allows you to specify the URL for the reference audio file used to clone the voice.
+      The TTS system will use this audio as a reference for the voice.
+  ref_text:
+    name: "Reference Text"
+    description: >-
+      This option allows you to specify the sample text used by the TTS system.
+      The system will generate speech using this text as a reference.
+

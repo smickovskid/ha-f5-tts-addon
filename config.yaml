@@ -1,0 +1,34 @@
+# https://developers.home-assistant.io/docs/add-ons/configuration#add-on-config
+name: F5 TTS
+version: "1.0.1"
+slug: f5-tts
+description: F5 TTS add-on for voice cloning
+url: "https://github.com/SWivid/F5-TTS"
+arch:
+  - armv7
+  - aarch64
+  - amd64
+init: false
+startup: services
+host_network: true
+image: smickovskidamjan/f5-tts-server
+devices:
+  - "/dev/dri:/dev/dri"
+  - "/dev/nvidia0:/dev/nvidia0"
+  - "/dev/nvidiactl:/dev/nvidiactl"
+  - "/dev/nvidia-uvm:/dev/nvidia-uvm"
+  - "/dev/nvidia-uvm:/dev/nvidia-uvm-tools"
+  - "/dev/nvidia-uvm:/dev/nvidia-modeset"
+full_access: true
+map:
+  - share:rw
+options:
+  checkpoint: "https://huggingface.co/SWivid/F5-TTS/resolve/main/F5TTS_Base/model_1200000.pt"
+  vocab: "https://huggingface.co/SWivid/F5-TTS/resolve/main/F5TTS_Base/vocab.txt"
+  ref_audio: "https://www.dropbox.com/scl/fi/spnumigv4x0lvwsf4vp5a/ref_audio.wav?rlkey=kx31hhntf2j41ajt9jtvbc87t&st=ltwfiqbu&dl=0"
+  ref_text: "this is a totally unregistered cross temporal asteroid. here they can rop and play with other jerries. it could not be safer"
+schema:
+  checkpoint: "str"
+  vocab: "str"
+  ref_audio: "str"
+  ref_text: "str"

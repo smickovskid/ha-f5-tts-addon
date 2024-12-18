@@ -1,0 +1,9 @@
+#!/command/with-contenv bashio
+
+ADDON_DIR="/share/f5_tts_server"
+
+bashio::log.info "Starting F5 TTS Socket server"
+ref_text=$(bashio::config 'ref_text')
+
+
+/venv/bin/python /app/F5-TTS/src/f5_tts/socket_server.py --ckpt_file "$ADDON_DIR/model.pt" --vocab_file "$ADDON_DIR/vocab.txt" --ref_audio "$ADDON_DIR/ref_audio.wav" --ref_text "$ref_text"
